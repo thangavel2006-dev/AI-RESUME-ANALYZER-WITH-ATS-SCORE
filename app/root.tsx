@@ -9,7 +9,10 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { usePuterStore } from "~/lib/puter";
+import { useEffect } from "react";
 
+// ✅ Links function stays the same
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -23,9 +26,18 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+// ✅ Root layout component
+export default function Root() {
+  const init = usePuterStore((state) => state.init);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      init();
+    }
+  }, [init]);
+
   return (
-    <html lang="en">
+      <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,18 +45,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+      <script src="https://js.puter.com/v2/"></script>
+      {/* ✅ Outlet renders child routes */}
+      <Outlet />
+      <ScrollRestoration />
+      <Scripts />
       </body>
-    </html>
+      </html>
   );
 }
 
-export default function App() {
-  return <Outlet />;
-}
-
+// ✅ Error boundary
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
@@ -53,23 +64,23 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
+        error.status === 404
+            ? "The requested page could not be found."
+            : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+      <main className="pt-16 p-4 container mx-auto">
+        <h1>{message}</h1>
+        <p>{details}</p>
+        {stack && (
+            <pre className="w-full p-4 overflow-x-auto">
           <code>{stack}</code>
         </pre>
-      )}
-    </main>
+        )}
+      </main>
   );
 }

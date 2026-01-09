@@ -3,7 +3,7 @@ import ResumeCard from "~/components/Resumecard";
 import {Link, useLocation, useNavigate} from "react-router";
 import { resumes } from "../../constants";
 import {usePuterStore} from "~/lib/puter";
-import {useEffect} from "react"; // ← make sure this exists
+import {useEffect} from "react";
 export default function Home() {
     const { isLoading, auth } = usePuterStore();
     const navigate = useNavigate();
@@ -16,15 +16,12 @@ export default function Home() {
             <Navbar />
 
             <section className="main-section">
-                {/* Heading */}
                 <div className="page-heading">
                     <h1>Track Your Applications & Resume Rating </h1>
                     <h2>
                         Review your submissions and check AI-powered feedback.
                     </h2>
                 </div>
-
-                {/* Resume Grid */}
                 <div className="resumes-section">
                     {resumes.map((resume) => (
                         <ResumeCard key={resume.id} resume={resume} />
